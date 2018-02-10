@@ -8,15 +8,8 @@ import java.util.Map;
 import org.usfirst.frc.team1797.robot.commands.auto.AutoCrossBaseline13;
 import org.usfirst.frc.team1797.robot.commands.auto.AutoDoNothing;
 import org.usfirst.frc.team1797.robot.commands.auto.AutoRunner;
-// import org.usfirst.frc.team1797.robot.commands.auto.AutoCrossBaseline2Curved;
+import org.usfirst.frc.team1797.robot.commands.auto.AutoRunner.Routine;
 import org.usfirst.frc.team1797.robot.subsystems.Drivetrain;
-// import org.usfirst.frc.team1797.robot.subsystems.Flipper;
-// import org.usfirst.frc.team1797.robot.subsystems.Ramp;
-////import org.usfirst.frc.team1797.robot.subsystems.Roller;
-//import org.usfirst.frc.team1797.robot.subsystems.RollerPiston;
-//import org.usfirst.frc.team1797.robot.subsystems.IntakeMotors;
-//import org.usfirst.frc.team1797.robot.subsystems.IntakePistons;
-import org.usfirst.frc.team1797.robot.utils.TrajectoryManager;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -55,42 +48,11 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		System.out.println("testing 2 see if code is working");
 		oi = new OI();
 		autonomousChooser = new SendableChooser();
-		
-//		// plez jus dis unce
-//		TrajectoryManager manager = new TrajectoryManager();
-//		System.out.println(System.getProperty("user.dir"));
-//		File f = new File("/Users/Arman/Trajectories");
-//		List<File> list = Arrays.asList(f.listFiles());
-//		System.out.println("List size: " +list.size());
-//		for(int i = 0; i < list.size(); i++) {
-//			manager.waypointCSVToTrajectory(list.get(i));
-//			System.out.println(Arrays.deepToString(manager.folder));
-//		}
-		
-		
-		// Please stay away from the architecture unless it does not work; only use Routine enums and not strings. Kthx. ~ab
-		// autonomousChooser.addObject("Deposit Single Box 13 [Left]", new AutoRunner(AutoRunner.Routines.DEPOSITSINGLEBOX13L));
-		// autonomousChooser.addObject("Deposit Single Box 13 [Right]", new AutoRunner(AutoRunner.Routines.DEPOSITSINGLEBOX13L));
-		autonomousChooser.addObject("Autonomous Do Nothing", new AutoDoNothing());
-		autonomousChooser.addDefault("Autonomous Cross Baseline 13", new AutoCrossBaseline13());
-		autonomousChooser.addObject("Autonomous Cross Baseline 2 Curved", new AutoRunner(AutoRunner.Routines.BASELINECURVED2));
-		autonomousChooser.addObject("Autonomous Deposit Single Box 1", new AutoRunner(AutoRunner.Routines.DEPOSITBOX1));
-		autonomousChooser.addObject("Autonomous Deposit Single Box 2", new AutoRunner(AutoRunner.Routines.DEPOSITBOX2));
-		autonomousChooser.addObject("Autonomous Deposit Single Box 3", new AutoRunner(AutoRunner.Routines.DEPOSITBOX3));
-		
-		SmartDashboard.putData("Autonomous Routine Selector", autonomousChooser);
-		SmartDashboard.putBoolean("Gyro Status", RobotMap.gyro.isConnected());
-		SmartDashboard.putNumber("Gyro Angle (deg)", RobotMap.gyro.getAngle());
+		autonomousChooser.addDefault("Deposit Box 1", new AutoRunner(Routine.DEPOSITBOX1));
 	}
-
-	/**
-	 * This function is called once each time the robot enters Disabled mode.
-	 * You can use it to reset any subsystem information you want to clear when
-	 * the robot is disabled.
-	 */
+	
 	@Override
 	public void disabledInit() {
 		
@@ -101,17 +63,6 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 	}
 
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select
-	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
-	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-	 * getString code to get the auto name from the text box below the Gyro
-	 *
-	 * You can add additional auto modes by adding additional commands to the
-	 * chooser code above (like the commented example) or additional comparisons
-	 * to the switch structure below with additional strings & commands.
-	 */
 	@Override
 	public void autonomousInit() {
 		autonomousCommand = (Command) autonomousChooser.getSelected();
@@ -119,9 +70,6 @@ public class Robot extends IterativeRobot {
 			autonomousCommand.start();
 	}
 
-	/**
-	 * This function is called periodically during autonomous
-	 */
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
@@ -129,25 +77,15 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
-		// This makes sure that the autonomous stops running when
-		// teleop starts running. If you want the autonomous to
-		// continue until interrupted by another command, remove
-		// this line or comment it out.
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
 	}
 
-	/**
-	 * This function is called periodically during operator control
-	 */
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 	}
 
-	/**
-	 * This function is called periodically during test mode
-	 */
 	@Override
 	public void testPeriodic() {
 		LiveWindow.run();
